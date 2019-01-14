@@ -109,6 +109,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void isEmpanada(View view) {
-
+//        @POST("/images")
     }
 }
