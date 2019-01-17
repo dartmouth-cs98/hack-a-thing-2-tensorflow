@@ -10,9 +10,13 @@ def import_training_data(path):
 
     # preprocess the image data and compile it for training
     images = np.empty((0, size[0]*size[1]), float)
+    labels = list()
 
-    for f in os.listdir(abspath):
-        im = Image.open(abspath +"/" + f)
+    count = 0
+
+    # traverse emp folder (all 1s)
+    for f in os.listdir(abspath+"/emp"):
+        im = Image.open(abspath +"/emp/" + f)
 
         # get the numeric data from the image
         image_data = np.array(list(im.getdata()))
@@ -21,18 +25,38 @@ def import_training_data(path):
         image_data = np.divide(image_data, 255)
 
         images = np.append(images, np.array([image_data]), axis=0)
+        labels.append(1)
 
-
-    # for as many train_images as there are, set all of their labels to be 1
-    labels = np.ones(images.shape[0])
+        count += 1
+        print("Processing files: {}".format(count), end="\r")
     
+    # traverse nada folder (all 0s)
+    for f in os.listdir(abspath+"/nada"):
+        im = Image.open(abspath +"/nada/" + f)
+
+        # get the numeric data from the image
+        image_data = np.array(list(im.getdata()))
+
+        # divide all the data by 255
+        image_data = np.divide(image_data, 255)
+
+        images = np.append(images, np.array([image_data]), axis=0)
+        labels.append(0)
+
+        count += 1
+        print("Processing files: {}".format(count), end="\r")
+    
+    labels = np.array(labels)
+
+    print("Done")
     return (images, labels)
 
 def train_model(train_images, train_labels):
     # build the model architecture
     model = keras.Sequential([
-        keras.layers.Dense(128, activation=tf.nn.relu),
-        keras.layers.Dense(10, activation=tf.nn.sigmoid)
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(2, activation='sigmoid')
     ])
 
     # compile the model
@@ -45,13 +69,28 @@ def train_model(train_images, train_labels):
 
     return model
 
-def test_model(test_images, test_labels):
+def test_model(model, test_images, test_labels):
     test_loss, test_acc = model.evaluate(test_images, test_labels)
 
     print('Test accuracy:', test_acc)
 
 if __name__ == "__main__":
-    (images, labels) = import_training_data("./tensorflow/training_data_prepared")
+    # ######### used to train and save the labels ###########
+    # (train_images, train_labels) = import_training_data("./tensorflow/training_data_prepared")
+    # (test_images, test_labels) = import_training_data("./tensorflow/test_data_prepared")
 
-    print(images)
-    print(labels)
+    # np.save("training_data.npy", train_images)
+    # np.save("training_labels.npy", train_labels)
+    # np.save("test_data.npy", test_images)
+    # np.save("test_labels.npy", test_labels)
+
+    # #######################################################
+
+    train_data = np.load("training_data.npy")
+    train_labels = np.load("training_labels.npy")
+    test_data = np.load("test_data.npy")
+    test_labels = np.load("test_labels.npy")
+
+    model = train_model(train_data, train_labels)
+    test_model(model, test_data, test_labels)
+
