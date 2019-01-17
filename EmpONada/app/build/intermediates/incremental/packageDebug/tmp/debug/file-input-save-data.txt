@@ -1,0 +1,11 @@
+#Internal package file, do not edit.
+#Mon Jan 14 00:27:08 EST 2019
+1.base=/Users/IjemmaOnwuzulike 1/Documents/Dartmouth/Classes/19W/Senior Design and Implementation/hack-a-thing-2-tensorflow/EmpONada/app/build/intermediates/transforms/dexMerger/debug/1
+0.baseType=DIRECTORY
+1.baseType=DIRECTORY
+count=2
+1.set=DEX
+0.path=classes.dex
+0.set=DEX
+0.base=/Users/IjemmaOnwuzulike 1/Documents/Dartmouth/Classes/19W/Senior Design and Implementation/hack-a-thing-2-tensorflow/EmpONada/app/build/intermediates/transforms/dexMerger/debug/0
+1.path=classes.dex
