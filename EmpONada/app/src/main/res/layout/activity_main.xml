@@ -15,6 +15,11 @@
         android:layout_gravity="center_horizontal"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empanada_title" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,9 +43,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/check_image"
-            android:onClick="isEmpanada"/>
+            android:onClick="isEmpanada" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/prediction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 

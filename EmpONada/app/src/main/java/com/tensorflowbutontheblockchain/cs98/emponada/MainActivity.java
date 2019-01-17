@@ -15,16 +15,33 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.rpc.ApiException;
 import com.google.photos.library.v1.PhotosLibraryClient;
 import com.google.photos.library.v1.PhotosLibrarySettings;
 import com.google.photos.library.v1.proto.Album;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,36 +50,23 @@ public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    TextView predictionText;
+
     ImageView empanadaImageView;
     String mCurrentPhotoPath;
     Uri photoURI;
+    File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        predictionText = findViewById(R.id.prediction);
+        predictionText.setText("");
+
         empanadaImageView = findViewById(R.id.empanada_image);
 
-        PhotosLibrarySettings settings =
-                PhotosLibrarySettings.newBuilder()
-                        .setCredentialsProvider(
-                                FixedCredentialsProvider.create(/* Add credentials here. */))
-                        .build();
-
-        try (PhotosLibraryClient photosLibraryClient =
-                     PhotosLibraryClient.initialize(settings)) {
-
-            // Create a new Album  with at title
-            Album createdAlbum = photosLibraryClient.createAlbum("My Album");
-
-            // Get some properties from the album, such as its ID and product URL
-            String id = album.getId();
-            String url = album.getProductUrl();
-
-        } catch (ApiException e) {
-            // Error during album creation
-        }
     }
 
     // Taken from https://stackoverflow.com/questions/2459916/how-to-make-an-imageview-with-rounded-corners
@@ -109,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
 
-        Bitmap imageBitmap = getRoundedCornerBitmap(BitmapFactory.decodeFile(mCurrentPhotoPath), 600);
+        Bitmap image = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        Bitmap imageBitmap = getRoundedCornerBitmap(image, 600);
         empanadaImageView.setImageBitmap(imageBitmap);
     }
 
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -134,8 +139,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void isEmpanada(View view) {
-//        @GET("/api/photos")
-//
-//    }
+    // Taken from https://stackoverflow.com/questions/20322528/uploading-images-to-server-android
+    public void isEmpanada(View view) {
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+        /* example for setting a HttpMultipartMode */
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+        /* example for adding an image part */
+        FileBody fileBody = new FileBody(new File(mCurrentPhotoPath)); //image should be a String
+        builder.addPart("my_file", fileBody);
+//and so on
+        final HttpEntity entity = builder.build();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        if (photoFile != null) {
+            try {
+                params.put("file", photoFile);
+            } catch(FileNotFoundException e) {}
+        }
+        client.post("https://emponada-api.herokuapp.com/predict", params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                        System.out.println("okokoko: " + statusCode + " " + responseString);
+                        if (responseString.equals("0")) {
+                            predictionText.setText("NOT AN EMPANADA");
+                        } else {
+                            predictionText.setText("IT'S AN EMPANADA");
+                        }
+
+                    }
+                });
+    }
 }
