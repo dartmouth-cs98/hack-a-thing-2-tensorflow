@@ -736,6 +736,7 @@ id packed
 id parent
 id parentPanel
 id percent
+id prediction
 id progress_circular
 id progress_horizontal
 id radio
@@ -880,6 +881,7 @@ string abc_toolbar_collapse_description
 string app_name
 string camera_button
 string check_image
+string empanada_title
 string search_menu_title
 string status_bar_notification_info_overflow
 style AlertDialog_AppCompat
