@@ -3,6 +3,8 @@ import tensorflow as tf
 import numpy as np
 import prepare_dataset
 
+# Much of this code adapted from https://www.tensorflow.org/tutorials/keras/basic_classification
+
 class NN(object):
     def __init__(self):
         self.model = None
