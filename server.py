@@ -12,6 +12,18 @@ def index():
   """
   return "This is the root"
 
+# GET
+@app.route("/api/photos", methods=["GET"])
+def get_images():
+  """
+  gets all the requested images
+  :return: json
+  """
+
+  json = request.get_json()
+  print(json)
+  return jsonify({"here are all the images": json})
+
 # POST
 @app.route("/api/upload_photo", methods=["POST"])
 def get_image_prediction():

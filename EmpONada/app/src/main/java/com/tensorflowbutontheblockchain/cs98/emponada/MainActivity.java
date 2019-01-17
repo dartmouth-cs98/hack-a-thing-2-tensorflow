@@ -18,6 +18,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.api.gax.rpc.ApiException;
+import com.google.photos.library.v1.PhotosLibraryClient;
+import com.google.photos.library.v1.PhotosLibrarySettings;
+import com.google.photos.library.v1.proto.Album;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -37,6 +43,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         empanadaImageView = findViewById(R.id.empanada_image);
+
+        PhotosLibrarySettings settings =
+                PhotosLibrarySettings.newBuilder()
+                        .setCredentialsProvider(
+                                FixedCredentialsProvider.create(/* Add credentials here. */))
+                        .build();
+
+        try (PhotosLibraryClient photosLibraryClient =
+                     PhotosLibraryClient.initialize(settings)) {
+
+            // Create a new Album  with at title
+            Album createdAlbum = photosLibraryClient.createAlbum("My Album");
+
+            // Get some properties from the album, such as its ID and product URL
+            String id = album.getId();
+            String url = album.getProductUrl();
+
+        } catch (ApiException e) {
+            // Error during album creation
+        }
     }
 
     // Taken from https://stackoverflow.com/questions/2459916/how-to-make-an-imageview-with-rounded-corners
@@ -108,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void isEmpanada(View view) {
-//        @POST("/images")
-    }
+//    public void isEmpanada(View view) {
+//        @GET("/api/photos")
+//
+//    }
 }

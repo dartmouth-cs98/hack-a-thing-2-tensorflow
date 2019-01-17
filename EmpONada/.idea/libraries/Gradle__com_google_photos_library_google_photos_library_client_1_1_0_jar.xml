@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.photos.library:google-photos-library-client:1.1.0@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.photos.library/google-photos-library-client/1.1.0/7a06352814721ea7797daabebfe1203733622f2d/google-photos-library-client-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.photos.library/google-photos-library-client/1.1.0/c3ffc4b03f5b13c29c8b98dfaa38a11080730dc2/google-photos-library-client-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
