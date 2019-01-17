@@ -1841,6 +1841,7 @@
     <string name="app_name">EmpONada</string>
     <string name="camera_button">Take Photo</string>
     <string name="check_image">Empanada?</string>
+    <string name="empanada_title">Are you lookin\' at an Empanada?</string>
     <string name="search_menu_title">Search</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
